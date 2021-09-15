@@ -5,6 +5,7 @@ const contactMiddlewares = require('../middlewares/contact');
 const router = express.Router();
 
 // ----- GET -----
+router.get("/",contactControllers.getContacts)
 
 // ----- POST -----
 
