@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 dotenv.config({path: "./config.env"});
+// connect to MongoDB
 mongoose.connect(process.env.DB, {useNewUrlParser: true}).then(console.log("Connected to MongoDB"));
 
 const initialRouters = require('./routers/initial');

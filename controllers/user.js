@@ -5,6 +5,7 @@ const {User} = require('../models/user');
 
 // ---- POST -----
 const register = async(req, res) => {
+    // check if user information is correct
     const errors = validationResult(req);
     if (!errors.isEmpty()){
         res.status(400).json({
@@ -15,7 +16,9 @@ const register = async(req, res) => {
     };
 
     const {password} = req.body;
+    // password will be hash
     const hashedPassword = await bcrypt.hash(password, 12)
+    // Save user into DB
     try {
         User.create({
             email: req.body.email,
@@ -36,22 +39,26 @@ const register = async(req, res) => {
 const login = async(req, res) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({email: req.body.email});
+    // check if user already exist
+    const user = await User.findOne({email: email});
     if(!user){
         return res.status(400).json({
-            message: "Invalid email or password 1"
+            message: "Invalid email"
         });
     }
 
+    // check if password is correct
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if(!isPasswordValid){
         return res.status(400).json({
-            message: "Invalid email or password 2"
+            message: "Invalid password"
         });
     }
 
+    // create token
     const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
     
+    // create cookie
     res.cookie("jwt", token, { httpOnly: true, secure: false});
 
     res.status(200).json({
