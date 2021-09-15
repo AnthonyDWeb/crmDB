@@ -3,6 +3,19 @@ const jwt = require('jsonwebtoken');
 const {validationResult} = require('express-validator');
 const {User} = require('../models/user');
 
+// ----- GET -----
+const protect = (req, res, next) => {
+    try {
+        const data = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+        req.cookies.jwtData = data;
+        next();
+    } catch (error) {
+        return res.status(401).json({
+			message: "Your token is not valid",
+		});  
+    }
+}
+
 // ---- POST -----
 const register = async(req, res) => {
     // check if user information is correct
@@ -68,6 +81,7 @@ const login = async(req, res) => {
 }
 
 module.exports = {
+    protect: protect,
     register: register,
     login: login
 }
