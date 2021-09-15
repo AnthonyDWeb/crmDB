@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const {validationResult} = require('express-validator');
 const {Contact} = require('../models/contact');
 
@@ -13,17 +12,28 @@ const getContacts = async(req, res) =>{
     } catch (error) {
         res.status(401).json({
             message: "error detected",
-            errors: error
         })
     }
 }
 
 // ----- POST -----
-
+const newContact = async(req, res) => {
+    try {
+        Contact.create(req.body);
+        res.status(201).json({
+            message: `${req.body.name} is created as a contact`
+        })
+    } catch (error) {
+        res.status(401).json({
+            message: "error detected",
+        })
+    }
+}
 // ----- PUT -----
 
 // ----- DELETE -----
 
 module.exports = {
-    getContacts
+    getContacts,
+    newContact
 }

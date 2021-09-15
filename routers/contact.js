@@ -9,6 +9,7 @@ const router = express.Router();
 router.get("/", protect, contactControllers.getContacts)
 
 // ----- POST -----
+router.post("/", protect, contactControllers.newContact)
 
 // ----- PUT -----
 
