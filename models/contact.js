@@ -5,7 +5,7 @@ const ContactSchema = new mongoose.Schema({
     name: String,
     email: String,
     description: String,
-    categorie: String
+    category: String
 });
 const Contact = mongoose.model("Contact", ContactSchema);
 

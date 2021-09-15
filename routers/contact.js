@@ -7,11 +7,13 @@ const router = express.Router();
 
 // ----- GET -----
 router.get("/", protect, contactControllers.getContacts)
+// router.get("/", protect, contactControllers.getContacts)
 
 // ----- POST -----
 router.post("/", protect, contactControllers.newContact)
 
 // ----- PUT -----
+router.put("/")
 
 // ----- DELETE -----
 
