@@ -85,14 +85,13 @@ const setContact = async(req, res) => {
 
 // ----- DELETE -----
 const deleteContact = async(req, res) => {
-    for (let i = 0; Object.keys(req.query).length; i++){
         try {
-            let key = Object.keys(req.query)[i];        
-            let value = Object.values(req.query)[i]; 
-            let contacts = await Contact.findOneAndUpdate(
-                { name: req.params.name},  
-                { $push : {[key]: value} },
-                {new: true}
+            // let key = Object.keys(req.query)[0];        
+            // let value = Object.values(req.query)[0]; 
+            // console.log("key", key);
+            // console.log("value", value);
+            let contacts = await Contact.findOneAndRemove(
+                { _id: req.params.id} 
             );
             return res.status(200).json({
                 status: "success",
@@ -103,7 +102,6 @@ const deleteContact = async(req, res) => {
                 message: "error detected",
             })
         }
-    }
 }
 
 module.exports = {

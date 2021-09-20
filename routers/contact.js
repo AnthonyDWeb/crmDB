@@ -15,6 +15,6 @@ router.post("/", protect, contactControllers.newContact)
 router.put("/:name", protect, contactControllers.setContact)
 
 // ----- DELETE -----
-router.delete("/:name", protect, contactControllers.deleteContact)
+router.delete("/:id", protect, contactControllers.deleteContact)
 
 module.exports = router;
