@@ -19,22 +19,25 @@ const protect = async(req, res, next) => {
 // ---- POST -----
 const register = async(req, res) => {
     // check if user information is correct
-    const errors = validationResult(req);
+    const errors = await validationResult(req);
     if (!errors.isEmpty()){
         return res.status(400).json({
             message: "error(s) detected",
             errors: errors.array()
         });
     };
-
+    
     const {password} = req.body;
     // password will be hash
     const hashedPassword = await bcrypt.hash(password, 12)
     // Save user into DB
-    try {
-        const userEmail = await User.find({email: req.body.email}); 
-        console.log(("user", userEmail));
-        if( !userEmail ){
+    const userEmail = await User.find({email: req.body.email}); 
+    if( userEmail.length === 0 ){
+        try {
+        // const user = await User.find(); 
+        // console.log(("user", user));
+        console.log(("userEmail", userEmail));
+            console.log('register is Ok !');
             User.create({
                 email: req.body.email,
                 password: hashedPassword
@@ -43,14 +46,16 @@ const register = async(req, res) => {
                 success: true,
                 message: `user created with this email: ${req.body.email}`
             })
+        } catch (error) {
+            return res.status(400).json({
+                messages: `error detected`
+            })
         }
-    } catch (error) {
-        return res.status(400).json({
-            messages: `${req.body.email} already exist`
-        })
+        
     }
-
-
+    return res.status(400).json({
+        messages: `${req.body.email} already exist`
+    })
 };
 
 const login = async(req, res) => {
