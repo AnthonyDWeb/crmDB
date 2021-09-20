@@ -1,20 +1,17 @@
 // const jwt = require('jsonwebtoken');
 const {validationResult} = require('express-validator');
 const {Contact} = require('../models/contact');
-// const {User} = require("../models/user")
 
 // ----- GET -----
 const getContacts = async(req, res) =>{
      if(Object.keys(req.query).length !== 0){
             try {
-                    let contacts = await Contact.find( {userId : req.cookies.jwtData.id});
                     let key = Object.keys(req.query)[0]; 
                     let value = Object.values(req.query)[0]; 
                     let myContacts = await Contact.find({
                         userId : req.cookies.jwtData.id,
                         [key]: value
                     });
-                    console.log("contact", contacts);       
                     return res.status(200).json({
                         status: "success1",
                         data: myContacts
@@ -85,14 +82,12 @@ const setContact = async(req, res) => {
 
 // ----- DELETE -----
 const deleteContact = async(req, res) => {
+    let myUserId = req.cookies.jwtData.id;
         try {
-            // let key = Object.keys(req.query)[0];        
-            // let value = Object.values(req.query)[0]; 
-            // console.log("key", key);
-            // console.log("value", value);
-            let contacts = await Contact.findOneAndRemove(
-                { _id: req.params.id} 
-            );
+            let contacts = await Contact.findOneAndRemove({
+                userId: myUserId,
+                _id: req.params.id
+            });
             return res.status(200).json({
                 status: "success",
                 data: contacts
