@@ -1,15 +1,19 @@
+// const jwt = require('jsonwebtoken');
 const {validationResult} = require('express-validator');
 const {Contact} = require('../models/contact');
+// const {User} = require("../models/user")
 
 // ----- GET -----
 const getContacts = async(req, res) =>{
-     if(req.query !== {}){     
+    let myContacts = await Contact.find( {userId : req.cookies.jwtData.id})
+
+     if(Object.keys(req.query).length !== 0){
             try {
                     let key = Object.keys(req.query)[0];        
                     let value = Object.values(req.query)[0]; 
                     let contacts = await Contact.findOne({[key]: value});
                     return res.status(200).json({
-                        status: "success",
+                        status: "success1",
                         data: contacts
                     })
                 } catch (error) {
@@ -22,7 +26,7 @@ const getContacts = async(req, res) =>{
     try {
         let contacts = await Contact.find();
         res.status(200).json({
-            status: "success",
+            status: "success2",
             data: contacts
         })
     } catch (error) {
@@ -34,6 +38,14 @@ const getContacts = async(req, res) =>{
 
 // ----- POST -----
 const newContact = async(req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()){
+        res.status(400).json({
+            message: "error(s) detected",
+            errors: errors.array()
+        });
+        return;
+    };
     try {
         Contact.create(req.body);
         res.status(201).json({
@@ -46,11 +58,56 @@ const newContact = async(req, res) => {
     }
 }
 // ----- PUT -----
-// const newContactName = async(req, res) =>
+const setContact = async(req, res) => {
+    for (let i = 0; Object.keys(req.query).length; i++){
+        try {
+            let key = Object.keys(req.query)[i];        
+            let value = Object.values(req.query)[i]; 
+            let contacts = await Contact.findOneAndUpdate(
+                { name: req.params.name},  
+                // { $push : {[key]: value} },
+                // {new: true}
+            );
+            console.log("key", key);
+            console.log("value", value);
+            return res.status(200).json({
+                status: "success",
+                data: contacts
+            })
+        } catch (error) {
+            return res.status(401).json({
+                message: "error detected",
+            })
+        }
+    }
+}
 
 // ----- DELETE -----
+const deleteContact = async(req, res) => {
+    for (let i = 0; Object.keys(req.query).length; i++){
+        try {
+            let key = Object.keys(req.query)[i];        
+            let value = Object.values(req.query)[i]; 
+            let contacts = await Contact.findOneAndUpdate(
+                { name: req.params.name},  
+                { $push : {[key]: value} },
+                {new: true}
+            );
+            return res.status(200).json({
+                status: "success",
+                data: contacts
+            })
+        } catch (error) {
+            return res.status(401).json({
+                message: "error detected",
+            })
+        }
+    }
+}
 
 module.exports = {
     getContacts,
-    newContact
+    newContact,
+    setContact,
+    deleteContact
 }
