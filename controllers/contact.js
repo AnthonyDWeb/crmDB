@@ -69,13 +69,14 @@ const setContact = async(req, res) => {
             let value = Object.values(req.query)[i]; 
             let contacts = await Contact.findOneAndUpdate(
                 { name: req.params.name},  
-                // { $push : {[key]: value} },
-                // {new: true}
+                { $set : {[key]: value} },
+                {new: true}
             );
             console.log("key", key);
             console.log("value", value);
             return res.status(200).json({
                 status: "success",
+                message: `${key} -> ${value} is apply`,
                 data: contacts
             })
         } catch (error) {
