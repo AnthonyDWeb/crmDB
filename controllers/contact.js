@@ -63,20 +63,17 @@ const newContact = async(req, res) => {
 }
 // ----- PUT -----
 const setContact = async(req, res) => {
-    for (let i = 0; Object.keys(req.query).length; i++){
-        try {
-            let key = Object.keys(req.query)[i];        
-            let value = Object.values(req.query)[i]; 
-            let contacts = await Contact.findOneAndUpdate(
-                { name: req.params.name},  
-                { $set : {[key]: value} },
-                {new: true}
-            );
-            console.log("key", key);
-            console.log("value", value);
+    try {
+                let key = Object.keys(req.query)[0];        
+                let value = Object.values(req.query)[0]; 
+                let contacts = await Contact.findOneAndUpdate(
+                    { name: req.params.name},  
+                    { $set : {[key]: value} },
+                    {new: true}
+                );
+               
             return res.status(200).json({
                 status: "success",
-                message: `${key} -> ${value} is apply`,
                 data: contacts
             })
         } catch (error) {
@@ -84,7 +81,6 @@ const setContact = async(req, res) => {
                 message: "error detected",
             })
         }
-    }
 }
 
 // ----- DELETE -----
