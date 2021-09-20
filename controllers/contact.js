@@ -5,33 +5,37 @@ const {Contact} = require('../models/contact');
 
 // ----- GET -----
 const getContacts = async(req, res) =>{
-    let myContacts = await Contact.find( {userId : req.cookies.jwtData.id})
-
      if(Object.keys(req.query).length !== 0){
             try {
-                    let key = Object.keys(req.query)[0];        
+                    let contacts = await Contact.find( {userId : req.cookies.jwtData.id});
+                    let key = Object.keys(req.query)[0]; 
                     let value = Object.values(req.query)[0]; 
-                    let contacts = await Contact.findOne({[key]: value});
+                    let myContacts = await Contact.find({
+                        userId : req.cookies.jwtData.id,
+                        [key]: value
+                    });
+                    console.log("contact", contacts);       
                     return res.status(200).json({
                         status: "success1",
-                        data: contacts
+                        data: myContacts
                     })
                 } catch (error) {
                     return res.status(401).json({
-                        message: "error detected",
+                        message: "error detected2",
+                        error: error
                     })
                 }
         }
 
     try {
-        let contacts = await Contact.find();
-        res.status(200).json({
+        let contacts = await Contact.find( {userId : req.cookies.jwtData.id});
+        return res.status(200).json({
             status: "success2",
             data: contacts
         })
     } catch (error) {
-        res.status(401).json({
-            message: "error detected",
+        return res.status(401).json({
+            message: "error detected1",
         })
     }
 }

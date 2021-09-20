@@ -74,7 +74,7 @@ const login = async(req, res) => {
 
     // create token
     const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
-    console.log("token id",token.id);
+    console.log("token id",token);
     
     // create cookie
     res.cookie("jwt", token, { httpOnly: true, secure: false});
@@ -82,10 +82,25 @@ const login = async(req, res) => {
         success: true,
         message: `${req.body.email} is login`
     })
-}
+};
+
+const logout = async(req, res) => { 
+    try {
+        res.clearCookie('jwt');
+        // res.redirect('/');
+        res.json({
+            message: "you're logout"
+        })
+    } catch (error) {
+        res.json({
+            message: "error in deconection"
+        })
+    }
+};
 
 module.exports = {
     protect: protect,
     register: register,
-    login: login
+    login: login,
+    logout: logout
 }
